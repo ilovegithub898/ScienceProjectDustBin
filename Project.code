@@ -1,0 +1,39 @@
+#include <HCSR04.h>
+#include <Servo.h>
+
+UltraSonicDistanceSensor capteur_distance(3, 4);
+
+Servo mon_servo;
+
+void setup() {
+  Serial.begin(9600);
+  mon_servo.attach(10);
+  mon_servo.write(0);
+}
+
+void loop ()  {
+
+  int distance = capteur_distance.measureDistanceCm();
+  bool openLid = false;
+
+  if ( distance >1 && distance < 8)  // if there is something withing distance of the sensor
+  {
+    if (!openLid) {
+      mon_servo.write(90); // Open lid
+      openLid = true;
+    }
+
+    delay(3000); // 3 sec wait
+
+    if (openLid)
+    {
+      mon_servo.write(-90); // Close lid
+      openLid = false;
+    }
+ 
+  } else { // if there is not anything in sensors way
+    
+    delay (200);
+    
+  }
+}
